@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "env-cmd -f .env/development.env nodemon index.js"
+    "start": "env-cmd -f .env/development.env nodemon index.js",
+    "start-prod": "env-cmd -f .env/production.env node index.js"
   },
   "keywords": [],
   "author": "",
@@ -14,6 +15,7 @@
     "nodemon": "^3.1.4"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.17.1",
     "@line/bot-sdk": "^9.3.1",
     "axios": "^1.7.7",
     "express": "^4.19.2",

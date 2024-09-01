@@ -20,7 +20,7 @@ router.post('/webhook', async (req, res) => {
         })
     }
     catch(err){
-
+        console.log(err)        
     }    
 })
 

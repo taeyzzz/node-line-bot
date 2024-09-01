@@ -1,5 +1,7 @@
-const lineClient = require("./lineClient")
 const axios = require('axios')
+
+const lineClient = require("./lineClient")
+const GeminiModel = require('./geminiClient')
 
 const handleEvent = async ({
     type,
@@ -14,10 +16,11 @@ const handleEvent = async ({
     if (type !== 'message' || message.type !== 'text') {
         return Promise.resolve(null);
     }
-    const oilResult = await getOilPrices()
-    const flexOilMessage = generateFlexMessageOilPrice(oilResult)
-    
-    try{
+
+    if(message.text === "ราคาน้ำมัน"){
+        const oilResult = await getOilPrices()
+        const flexOilMessage = generateFlexMessageOilPrice(oilResult)
+        
         const replyResult = await lineClient.replyMessage({
             replyToken,
             messages: [
@@ -26,14 +29,18 @@ const handleEvent = async ({
         })
         return replyResult
     }
-    catch(err){
-        console.log(err);
-        
-    }
-   
-    console.log(replyResult);
     
-    return replyResult
+    const result = await GeminiModel.generateContent(message.text);
+    return await lineClient.replyMessage({
+        replyToken,
+        messages: [
+            {
+                "type": "text",
+                "text": result.response.text()
+            }
+        ]
+    })
+
 }
 
 const getOilPrices = async () => {
@@ -109,7 +116,23 @@ const generateFlexMessageOilPrice = (listOilData) => {
                     ]
                 }
             })
-        }
+        },
+        footer: {
+            type: "box",
+            layout: "vertical",
+            contents: [
+                {
+                    type: "button",
+                    action: {
+                        type: "uri",
+                        label: "More detail",
+                        uri: "https://oil-price.bangchak.co.th/BcpOilPrice1/th"
+                    },
+                    "style": "primary",
+                    "color": "#6eb109"
+                }
+            ]
+        }         
     }
 
     const tomorrowPriceBubbleMessage = {
@@ -178,7 +201,23 @@ const generateFlexMessageOilPrice = (listOilData) => {
                     ]
                 }
             })
-        }
+        },
+        footer: {
+            type: "box",
+            layout: "vertical",
+            contents: [
+                {
+                    type: "button",
+                    action: {
+                        type: "uri",
+                        label: "More detail",
+                        uri: "https://oil-price.bangchak.co.th/BcpOilPrice1/th"
+                    },
+                    "style": "primary",
+                    "color": "#6eb109"
+                }
+            ]
+        }         
     }
 
     return {
