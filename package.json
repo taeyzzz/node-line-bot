@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "env-cmd -f .env/development.env nodemon index.js",
-    "start-prod": "env-cmd -f .env/production.env node index.js"
+    "start-production": "node index.js"
   },
   "keywords": [],
   "author": "",
